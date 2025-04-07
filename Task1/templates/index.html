@@ -117,14 +117,34 @@
     </div>
 
     <script>
-        // Check if user is already logged in
-        if (localStorage.getItem('token')) {
-            const role = localStorage.getItem('role');
-            if (role === 'Student') {
-                window.location.href = '/student-dashboard';
-            } else if (role === 'Faculty') {
-                window.location.href = '/faculty-dashboard';
+        // Function to get cookie value by name
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+        
+        // Clear localStorage tokens if clear_tokens cookie is set
+        if (getCookie('clear_tokens') === 'true') {
+            localStorage.removeItem('token');
+            localStorage.removeItem('role');
+            // Clear the cookie after using it
+            document.cookie = 'clear_tokens=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+            
+            // Handle browser history to prevent "back" to dashboard
+            if (window.history && window.history.pushState) {
+                window.history.pushState('', '', window.location.href);
+                window.onpopstate = function() {
+                    window.history.pushState('', '', window.location.href);
+                };
             }
+        }
+
+        // Check if coming from logout and clear user state
+        if (document.referrer.includes('/logout')) {
+            localStorage.clear();
+            sessionStorage.clear();
         }
     </script>
 </body>

@@ -127,7 +127,7 @@
     <div class="container">
         <div class="header">
             <h2>Student Dashboard</h2>
-            <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+            <a href="{% url 'logout' %}" class="logout-btn" onclick="clearLocalStorage()">Logout</a>
         </div>
 
         {% if messages %}
@@ -193,5 +193,12 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function clearLocalStorage() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('role');
+        }
+    </script>
 </body>
 </html> 

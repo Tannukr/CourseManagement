@@ -109,7 +109,7 @@
 </head>
 <body>
     <div class="container">
-        <a href="{% url 'index' %}" class="back-link">← Back to Home</a>
+        <a href="{% url 'index' %}" class="back-link" style="font-size: 16px; font-weight: bold;" id="back-to-home">← Back to Home</a>
         <div class="card">
             <h2>Login</h2>
             {% if error_message %}
@@ -135,4 +135,11 @@
         </div>
     </div>
 </body>
+<script>
+    // Add event listener to the back button
+    document.getElementById('back-to-home').addEventListener('click', function(e) {
+        e.preventDefault();
+        window.location.href = "{% url 'index' %}";
+    });
+</script>
 </html> 

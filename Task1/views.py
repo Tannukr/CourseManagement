@@ -7,6 +7,10 @@ from .models import User, Course, Student
 
 class LoginView(View):
     def get(self, request):
+        # Check if this is a back action
+        if request.GET.get('action') == 'back':
+            return redirect('index')
+            
         if request.user.is_authenticated:
             # Simplified condition: just check the role
             if request.user.role == 'Faculty':
@@ -48,6 +52,10 @@ class LoginView(View):
 
 class RegisterView(View):
     def get(self, request):
+        # Check if this is a back action
+        if request.GET.get('action') == 'back':
+            return redirect('index')
+            
         return render(request, 'register.html')
 
     def post(self, request):
@@ -206,7 +214,16 @@ class FacultyDashboardView(LoginRequiredMixin, View):
 class LogoutView(View):
     def get(self, request):
         logout(request)
-        return redirect('login')
+        response = redirect('index')
+        # Set a clear token flag to tell the frontend to clear localStorage
+        response.set_cookie('clear_tokens', 'true', max_age=10)
+        
+        # Add cache control headers to prevent caching
+        response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response['Pragma'] = 'no-cache'
+        response['Expires'] = '0'
+        
+        return response
 
 class IndexView(View):
     def get(self, request):
